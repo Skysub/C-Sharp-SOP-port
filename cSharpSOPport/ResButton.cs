@@ -13,9 +13,11 @@ namespace cSharpSOPport
         float aspectR = (16f / 9f); //Der er kun support for widescreen opløsninger
 
         public static SpriteFont Arial12;
+        Game1 game1;
 
-        public ResButton(Size2 size, Vector2 position, int res) : base(size, position) //Constructer der tilføjer funktionalitet over base-knappen
+        public ResButton(Size2 size, Vector2 position, int res, Game1 game1) : base(size, position) //Constructer der tilføjer funktionalitet over base-knappen
         {
+            this.game1 = game1;
             this.res = res;
             Arial12 = Game1.content.Load<SpriteFont>("Arial12");
             posX = (int)(position.X+size.Width/2-(Arial12.MeasureString(res + " x " + (res * (16 / 9)))).X/2);
@@ -57,13 +59,7 @@ namespace cSharpSOPport
 
         public void SkiftResOScreen(int resolution) //Programmets tilstand går fra start-skærmen til hovedskærmen, og opløsningen af vinduet bliver ændret til det der blev valgt af brugeren
         {
-            Game1.start = false;
-            Game1.graphics.PreferredBackBufferWidth = (int)(resolution * aspectR);
-            Game1.graphics.PreferredBackBufferHeight = resolution;
-
-            //MandelScreen.sH = Game1.graphics.PreferredBackBufferHeight;
-            //MandelScreen.sW = Game1.graphics.PreferredBackBufferWidth;
-            Game1.graphics.ApplyChanges();
+            game1.SkiftResolution((int)(resolution * aspectR), resolution);
         }
     }
 }

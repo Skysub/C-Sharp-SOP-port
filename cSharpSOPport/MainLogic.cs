@@ -4,6 +4,7 @@ using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace cSharpSOPport
 {
@@ -25,36 +26,33 @@ namespace cSharpSOPport
         SpriteFont Arial12;
         int menuPick = 0;
         Dictionary<Keys, bool> tog = new Dictionary<Keys, bool>();
+        Stopwatch stopwatch;
 
         public MainLogic(int width, int height, SpriteFont Arial12, Game1 game1)
         {
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
             this.game1 = game1;
             this.Arial12 = Arial12;
             this.width = width;
             this.height = height;
             int res = 256;
-            fieldSim = new FieldSim(res, 10, width, height);
+            AddToggle();
+            fieldSim = new FieldSim(res, 10, width, height, ui_txtColor, Arial12, stopwatch);
+
         }
 
         public void Update(GameTime gameTime)
         {
-
-            /*if (kb.Shift(10)) testRun = true;
-            if (kb.Shift(81)) QuickRunTest();
-            if (kb.Shift(87)) RunTestIte();*/
-
-
             HandleControls();
             HandleUI();
 
-            //if (!kb.getToggle(32)) if (!kb.getToggle(84)) println(fieldSim.Update());
-
-
+            //if (!tog[Keys.Space] && !tog[Keys.T]) Console.WriteLine(fieldSim.Update());
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!kb.getToggle(84)) fieldSim.Draw(kb.getToggle(86), kb.getToggle(32), kb.getToggle(67), UI, spriteBatch);
+            if (!tog[Keys.T]) fieldSim.Draw(tog[Keys.V], tog[Keys.Space], tog[Keys.C], UI, spriteBatch);
             DrawUI();
         }
 
@@ -62,10 +60,11 @@ namespace cSharpSOPport
         {
             previousState = currentState;
             currentState = Keyboard.GetState();
+            UpdateToggle();
 
-            /*if (kb.Shift(82)) fieldSim = new FieldSim(128, 5);
-            if (kb.getToggle(86) && kb.Shift(67)) kb.setToggle(86, false);
-            if (kb.getToggle(67) && kb.Shift(86)) kb.setToggle(67, false);*/
+            if (Shift(Keys.R)) fieldSim = new FieldSim(128, 5, width, height, ui_txtColor, Arial12, stopwatch);
+            if (tog[Keys.V] && Shift(Keys.C)) tog[Keys.V] = false;
+            if (tog[Keys.C] && Shift(Keys.V)) tog[Keys.C] = false;
         }
 
         void HandleUI()
@@ -90,6 +89,14 @@ namespace cSharpSOPport
             return currentState.IsKeyDown(key) && previousState.IsKeyUp(key);
         }
 
+        void AddToggle()
+        {
+            tog.Add(Keys.C, false);
+            tog.Add(Keys.Space, false);
+            tog.Add(Keys.V, false);
+            tog.Add(Keys.T, false);
+        }
+
         void UpdateToggle()
         {
             foreach (Keys x in tog.Keys)
@@ -97,6 +104,7 @@ namespace cSharpSOPport
                 if (Shift(x))
                 {
                     tog[x] = !tog[x];
+                    return;
                 }
             }
         }

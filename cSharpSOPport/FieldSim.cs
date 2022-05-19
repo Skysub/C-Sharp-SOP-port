@@ -22,11 +22,14 @@ namespace cSharpSOPport
         int timer = 0, timerR = 0;
         long timerS = 0;
         Stopwatch stopwatch;
+        Color ui_txtColor;
+        SpriteFont Arial12;
 
-        public FieldSim(int N, int iter, int width, int height)
+        public FieldSim(int N, int iter, int width, int height, Color ui_txtColor, SpriteFont Arial12, Stopwatch sw)
         {
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
+            this.Arial12 = Arial12;
+            this.ui_txtColor = ui_txtColor;
+            stopwatch = sw;
             rd = new Random();
             this.width = width;
             this.height = height;
@@ -69,11 +72,6 @@ namespace cSharpSOPport
 
         public void Draw(bool showVel, bool paused, bool showVelF, bool UI, SpriteBatch spriteBatch)
         {
-            /*textSize(40);
-            background(0);
-
-            fill(255);
-            stroke(255);*/
             timerR = (int)stopwatch.ElapsedMilliseconds;
             if (!showVel && !showVelF) fluid.RenderD();
             else if (!showVelF) fluid.RenderV();
@@ -82,21 +80,19 @@ namespace cSharpSOPport
 
             if (UI)
             {
-                /*fill(255);
-                stroke(255);
-                if (paused) text("Sim time:      " + 0f, 10, 90);
-                else text("Sim time:      " + ((int)Math.Round(timerS / 100000f) / 10000f), 10, 90);
-                text("Render time: " + (timerR / 1000f), 10, 135);*/
+                if (paused) spriteBatch.DrawString(Arial12, "Sim time:      " + 0f, new Vector2(10, 90), ui_txtColor);
+                else spriteBatch.DrawString(Arial12, "Sim time:      " + ((int)Math.Round(timerS / 100000f) / 10000f), new Vector2(10, 90), ui_txtColor);
+                spriteBatch.DrawString(Arial12, "Render time: " + (timerR / 1000f), new Vector2(10, 135), ui_txtColor);
 
                 //fluid.renderV();
                 //fluid.fadeD();
 
                 timer = (int)stopwatch.ElapsedMilliseconds - timer;
                 //text("Frametime: "+int(floor(timer/1000f))+"."+(timer-1000*int(floor(timer/1000f))),10, 45);
-                /*text("Frametime:   " + (timer / 1000f), 10, 45);
-                text("FrameRate:   " + Math.Floor(1f / ((timer / 1000f))), 500, 45);
-                text("Resolution: " + N + "x" + N, 10, 180);*/
-                //println(timer);
+                spriteBatch.DrawString(Arial12, "Frametime:   " + (timer / 1000f), new Vector2(10, 45), ui_txtColor);
+                String text = "FrameRate:   " + Math.Floor(1f / ((timer / 1000f)));
+                spriteBatch.DrawString(Arial12, text, new Vector2(500, 45), ui_txtColor);
+                spriteBatch.DrawString(Arial12, "Resolution: " + width + "x" + height, new Vector2(10, 180), ui_txtColor);
                 timer = (int)stopwatch.ElapsedMilliseconds;
             }
         }

@@ -35,7 +35,7 @@ namespace cSharpSOPport
 
             Arial12 = Game1.content.Load<SpriteFont>("Arial12");
 
-            startScreen = new StartScreen();
+            startScreen = new StartScreen(this);
             mainLogic = new MainLogic(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, Arial12, this);
         }
 
@@ -53,7 +53,7 @@ namespace cSharpSOPport
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue); //Skaber bagrundsfarven af startskærmen og clearer ellers skærmen før der tegnes noget nyt
+            GraphicsDevice.Clear(Color.Black); //Skaber bagrundsfarven af startskærmen og clearer ellers skærmen før der tegnes noget nyt
             spriteBatch.Begin();
 
             if (start)// Styrer hvilken skærm der er aktiv
@@ -64,7 +64,7 @@ namespace cSharpSOPport
             spriteBatch.End();
         }
 
-        void SkiftResolution(int width, int height)
+        public void SkiftResolution(int width, int height)
         {
             start = false;
             graphics.PreferredBackBufferWidth = width;

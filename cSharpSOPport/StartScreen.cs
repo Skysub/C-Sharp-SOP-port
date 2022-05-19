@@ -8,15 +8,15 @@ namespace cSharpSOPport
     {
         ResButton R2160, R1440, R1080, R720, R540, R360, R144;
 
-        public StartScreen() //Initialiserer knapperne til at vælge resolution
+        public StartScreen(Game1 game1) //Initialiserer knapperne til at vælge resolution
         {
-            R2160 = new ResButton(new Size2(400, 45), new Vector2(440, 80), 2160);
-            R1440 = new ResButton(new Size2(400, 45), new Vector2(440, 160), 1440);
-            R1080 = new ResButton(new Size2(400, 45), new Vector2(440, 240), 1080);
-            R720 = new ResButton(new Size2(400, 45), new Vector2(440, 320), 720);
-            R540 = new ResButton(new Size2(400, 45), new Vector2(440, 400), 540);
-            R360 = new ResButton(new Size2(400, 45), new Vector2(440, 480), 360);
-            R144 = new ResButton(new Size2(400, 45), new Vector2(440, 560), 144);
+            R2160 = new ResButton(new Size2(400, 45), new Vector2(440, 80), 2160, game1);
+            R1440 = new ResButton(new Size2(400, 45), new Vector2(440, 160), 1440, game1);
+            R1080 = new ResButton(new Size2(400, 45), new Vector2(440, 240), 1080, game1);
+            R720 = new ResButton(new Size2(400, 45), new Vector2(440, 320), 720, game1);
+            R540 = new ResButton(new Size2(400, 45), new Vector2(440, 400), 540, game1);
+            R360 = new ResButton(new Size2(400, 45), new Vector2(440, 480), 360, game1);
+            R144 = new ResButton(new Size2(400, 45), new Vector2(440, 560), 144, game1);
         }
 
         public virtual void Update(GameTime gameTime) //Opdaterer knapperne så de reagerer til at blive moused over eller klikket
