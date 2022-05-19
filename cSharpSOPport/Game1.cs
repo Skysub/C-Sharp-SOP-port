@@ -74,13 +74,13 @@ namespace cSharpSOPport
             spriteBatch.End();
         }
 
-        public void SkiftResolution(int width, int height)
+        public void SkiftResolution(int width, int height, float scale)
         {
             start = false;
             graphics.PreferredBackBufferWidth = width;
             graphics.PreferredBackBufferHeight = height;
             graphics.ApplyChanges();
-            mainLogic.SkiftResolution(width, height);
+            mainLogic.SkiftResolution(width, height, scale);
         }
 
         void checkExit()

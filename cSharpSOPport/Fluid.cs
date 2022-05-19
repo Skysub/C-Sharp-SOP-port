@@ -14,6 +14,8 @@ namespace cSharpSOPport
         int N;
         int iter;
         int SCALE;
+        int width, height;
+        int resW, resH;
 
         int size;
         float dt;
@@ -29,32 +31,35 @@ namespace cSharpSOPport
         float[] Vx0;
         float[] Vy0;
 
-        public Fluid(float dt, float diffusion, float viscosity, int N, int iter, int scale)
+        public Fluid(float dt, float diffusion, float viscosity, int N, int iter, int scale, int width, int height)
         {
             this.N = N;
             this.iter = iter;
             SCALE = scale;
+            this.width = width;
+            this.height = height;
+            resH = height / SCALE;
+            resW = width / SCALE;
 
             this.size = N;
             this.dt = dt;
             this.diff = diffusion;
             this.visc = viscosity;
 
-            this.s = new float[N * N];
-            this.density = new float[N * N];
+            this.s = new float[resW * resH];
+            this.density = new float[resW * resH];
 
-            this.Vx = new float[N * N];
-            this.Vy = new float[N * N];
+            this.Vx = new float[resW * resH];
+            this.Vy = new float[resW * resH];
 
-            this.Vx0 = new float[N * N];
-            this.Vy0 = new float[N * N];
+            this.Vx0 = new float[resW * resH];
+            this.Vy0 = new float[resW * resH];
 
-            mF = new MoreFluid(N, iter);
+            mF = new MoreFluid(N, iter, resW, resH, scale);
         }
 
         public void step()
         {
-            int N = this.size;
             float visc = this.visc;
             float diff = this.diff;
             float dt = this.dt;
@@ -94,59 +99,50 @@ namespace cSharpSOPport
 
         public void RenderD(SpriteBatch spriteBatch)
         {
-            //colorMode(HSB, 255);
-
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < resW; i++)
             {
-                for (int j = 0; j < N; j++)
+                for (int j = 0; j < resH; j++)
                 {
-                    float x = i * SCALE;
-                    float y = j * SCALE;
-                    float d = this.density[IX(i, j)];
-                    /* fill((d + 50) % 255, 200, d);
-                     noStroke();
-                     square(x, y, SCALE);*/
-                    spriteBatch.FillRectangle(x, y, SCALE, SCALE, getRGB((int)(d + 50) % 255, 200, d));
+                    float xx = i * SCALE;
+                    float yy = j * SCALE;
+                    double d = this.density[IX(i, j)];
+                    spriteBatch.FillRectangle(xx, yy, SCALE, SCALE, getRGB((int)((d + 50) % 255), 200f/255, d/255d));
                 }
             }
         }
 
         public void RenderV(SpriteBatch spriteBatch)
         {
-
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < resW; i++)
             {
-                for (int j = 0; j < N; j++)
+                for (int j = 0; j < resH; j++)
                 {
                     float x = i * SCALE;
                     float y = j * SCALE;
                     float vx = this.Vx[IX(i, j)];
                     float vy = this.Vy[IX(i, j)];
-                   /* stroke(255);
-                    if (sqrt(vx * vx + vy * vy) > 0.01)
-                    {
-                        line(x, y, x + vx * SCALE * 50, y + vy * SCALE * 50);
-                    }*/
+                    /* stroke(255);
+                     if (sqrt(vx * vx + vy * vy) > 0.01)
+                     {
+                         line(x, y, x + vx * SCALE * 50, y + vy * SCALE * 50);
+                     }*/
+                    spriteBatch.DrawLine(x, y, x + vx * SCALE * 50, y + vy * SCALE * 50, Color.White);
                 }
             }
         }
 
         public void RenderVelF(SpriteBatch spriteBatch)
         {
-            //colorMode(HSB, 255);
-
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < resW / SCALE; i++)
             {
-                for (int j = 0; j < N; j++)
+                for (int j = 0; j < resH; j++)
                 {
                     float x = i * SCALE;
                     float y = j * SCALE;
                     float vx = this.Vx[IX(i, j)];
                     float vy = this.Vy[IX(i, j)];
                     float d = (float) Math.Sqrt(vx * vx + vy * vy) * 3000;
-                    /*fill((d + 50) % 255, 200, d);
-                    noStroke();
-                    square(x, y, SCALE);*/
+                    spriteBatch.FillRectangle(x, y, SCALE, SCALE, getRGB((int)((d + 50) % 255), 200f / 255, d / 255d));
                 }
             }
         }
@@ -162,9 +158,9 @@ namespace cSharpSOPport
 
         int IX(int x, int y)
         {
-            x = Math.Clamp(x, 0, N - 1);
-            y = Math.Clamp(y, 0, N - 1);
-            return x + (y * N);
+            x = Math.Clamp(x, 0, resW - 1);
+            y = Math.Clamp(y, 0, resH - 1);
+            return x + (y * resH);
         }
 
         /// <summary>

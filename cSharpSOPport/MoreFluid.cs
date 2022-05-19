@@ -6,20 +6,25 @@ namespace cSharpSOPport
 {
     class MoreFluid
     {
-        int N;
+        int N, Nm, Nmm, resW, resH;
         int iter;
         int scale;
 
-        public MoreFluid(int N, int iter)
+        public MoreFluid(int N, int iter, int resW, int resH, int scale)
         {
+            this.resW = resW;
+            this.resH = resH;
             this.N = N;
+            this.Nm = N - 1;
+            this.Nmm = N - 2;
             this.iter = iter;
-            scale = (int)Math.Round(1024f / N);
+            this.scale = scale;
+            //scale = (int)Math.Round(1024f / N);
         }
 
         public void diffuse(int b, float[] x, float[] x0, float diff, float dt)
         {
-            float a = dt * diff * (N - 2) * (N - 2);
+            float a = dt * diff * (Nmm) * (Nmm);
             lin_solve(b, x, x0, a, 1 + 4 * a);
         }
 
@@ -28,9 +33,9 @@ namespace cSharpSOPport
             float cRecip = (float)(1.0 / c);
             for (int k = 0; k < iter; k++)
             {
-                for (int j = 1; j < N - 1; j++)
+                for (int j = 1; j < Nm; j++)
                 {
-                    for (int i = 1; i < N - 1; i++)
+                    for (int i = 1; i < Nm; i++)
                     {
                         x[IX(i, j)] =
                           (x0[IX(i, j)]
@@ -47,9 +52,9 @@ namespace cSharpSOPport
         }
         public void project(float[] velocX, float[] velocY, float[] p, float[] div)
         {
-            for (int j = 1; j < N - 1; j++)
+            for (int j = 1; j < Nm; j++)
             {
-                for (int i = 1; i < N - 1; i++)
+                for (int i = 1; i < Nm; i++)
                 {
                     div[IX(i, j)] = -0.5f * (
                       velocX[IX(i + 1, j)]
@@ -65,9 +70,9 @@ namespace cSharpSOPport
             set_bnd(0, p);
             lin_solve(0, p, div, 1, 4);
 
-            for (int j = 1; j < N - 1; j++)
+            for (int j = 1; j < Nm; j++)
             {
-                for (int i = 1; i < N - 1; i++)
+                for (int i = 1; i < Nm; i++)
                 {
                     velocX[IX(i, j)] -= 0.5f * (p[IX(i + 1, j)]
                       - p[IX(i - 1, j)]) * N;
@@ -84,19 +89,20 @@ namespace cSharpSOPport
         {
             float i0, i1, j0, j1;
 
-            float dtx = dt * (N - 2);
-            float dty = dt * (N - 2);
+            float dtx = dt * (Nmm);
+            float dty = dt * (Nmm);
 
             float s0, s1, t0, t1;
             float tmp1, tmp2, x, y;
 
             float Nfloat = N;
+
             float ifloat, jfloat;
             int i, j;
 
-            for (j = 1, jfloat = 1; j < N - 1; j++, jfloat++)
+            for (j = 1, jfloat = 1; j < Nm; j++, jfloat++)
             {
-                for (i = 1, ifloat = 1; i < N - 1; i++, ifloat++)
+                for (i = 1, ifloat = 1; i < Nm; i++, ifloat++)
                 {
                     tmp1 = dtx * velocX[IX(i, j)];
                     tmp2 = dty * velocY[IX(i, j)];
@@ -134,27 +140,27 @@ namespace cSharpSOPport
 
         void set_bnd(int b, float[] x)
         {
-            for (int i = 1; i < N - 1; i++)
+            for (int i = 1; i < Nm; i++)
             {
                 x[IX(i, 0)] = b == 2 ? -x[IX(i, 1)] : x[IX(i, 1)];
-                x[IX(i, N - 1)] = b == 2 ? -x[IX(i, N - 2)] : x[IX(i, N - 2)];
+                x[IX(i, Nm)] = b == 2 ? -x[IX(i, Nmm)] : x[IX(i, Nmm)];
             }
-            for (int j = 1; j < N - 1; j++)
+            for (int j = 1; j < Nm; j++)
             {
                 x[IX(0, j)] = b == 1 ? -x[IX(1, j)] : x[IX(1, j)];
-                x[IX(N - 1, j)] = b == 1 ? -x[IX(N - 2, j)] : x[IX(N - 2, j)];
+                x[IX(Nm, j)] = b == 1 ? -x[IX(Nmm, j)] : x[IX(Nmm, j)];
             }
 
             x[IX(0, 0)] = 0.5f * (x[IX(1, 0)] + x[IX(0, 1)]);
-            x[IX(0, N - 1)] = 0.5f * (x[IX(1, N - 1)] + x[IX(0, N - 2)]);
-            x[IX(N - 1, 0)] = 0.5f * (x[IX(N - 2, 0)] + x[IX(N - 1, 1)]);
-            x[IX(N - 1, N - 1)] = 0.5f * (x[IX(N - 2, N - 1)] + x[IX(N - 1, N - 2)]);
+            x[IX(0, Nm)] = 0.5f * (x[IX(1, Nm)] + x[IX(0, Nmm)]);
+            x[IX(Nm, 0)] = 0.5f * (x[IX(Nmm, 0)] + x[IX(Nm, 1)]);
+            x[IX(Nm, Nm)] = 0.5f * (x[IX(Nmm, Nm)] + x[IX(Nm, Nmm)]);
         }
 
         int IX(int x, int y)
         {
-            x = Math.Clamp(x, 0, N - 1);
-            y = Math.Clamp(y, 0, N - 1);
+            Math.Clamp(x, 0, Nm);
+            Math.Clamp(y, 0, Nm);
             return x + (y * N);
         }
     }

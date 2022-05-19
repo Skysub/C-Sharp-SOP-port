@@ -25,20 +25,20 @@ namespace cSharpSOPport
         Color ui_txtColor;
         SpriteFont Arial12;
 
-        public FieldSim(int N, int iter, int width, int height, Color ui_txtColor, SpriteFont Arial12, Stopwatch sw)
+        public FieldSim(float scale, int iter, int width, int height, Color ui_txtColor, SpriteFont Arial12, Stopwatch sw)
         {
+            this.scale = (int)scale;
             this.Arial12 = Arial12;
             this.ui_txtColor = ui_txtColor;
             stopwatch = sw;
             rd = new Random();
             this.width = width;
             this.height = height;
-            this.N = N;
             this.iter = iter;
-            this.scale = (int)Math.Round((float)width / N);
+            //this.scale = (int)Math.Round((float)width / N);
 
             //standard viscosity er 0.0000001
-            fluid = new Fluid(0.2f, 0, 0.0000001f, N, iter, scale);
+            fluid = new Fluid(0.2f, 0, 0.0000001f, (int)(height/scale), iter, (int)scale, width, height);
         }
 
         public long Update()
@@ -81,7 +81,7 @@ namespace cSharpSOPport
             if (UI)
             {
                 if (paused) spriteBatch.DrawString(Arial12, "Sim time:      " + 0f, new Vector2(10, 90), ui_txtColor);
-                else spriteBatch.DrawString(Arial12, "Sim time:      " + ((int)Math.Round(timerS / 100000f) / 10000f), new Vector2(10, 90), ui_txtColor);
+                else spriteBatch.DrawString(Arial12, "Sim time:      " + (timerS / 1000f), new Vector2(10, 90), ui_txtColor);
                 spriteBatch.DrawString(Arial12, "Render time: " + (timerR / 1000f), new Vector2(10, 135), ui_txtColor);
 
                 //fluid.renderV();
@@ -95,12 +95,6 @@ namespace cSharpSOPport
                 spriteBatch.DrawString(Arial12, "Resolution: " + width + "x" + height, new Vector2(10, 180), ui_txtColor);
                 timer = (int)stopwatch.ElapsedMilliseconds;
             }
-        }
-
-        public void SkiftResolution(int width, int height)
-        {
-            this.width = width;
-            this.height = height;
         }
     }
 }

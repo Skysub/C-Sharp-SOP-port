@@ -17,7 +17,7 @@ namespace cSharpSOPport
         bool start = true;
         int test, punkter, ialt;
         bool quick;
-        int scale;
+        float scale = 1;
         bool UI = true;
 
         int width, height;
@@ -38,7 +38,7 @@ namespace cSharpSOPport
             this.height = height;
             int res = 256;
             AddToggle();
-            fieldSim = new FieldSim(res, 10, width, height, ui_txtColor, Arial12, stopwatch);
+            fieldSim = new FieldSim(scale, 5, width, height, ui_txtColor, Arial12, stopwatch);
 
         }
 
@@ -62,7 +62,7 @@ namespace cSharpSOPport
             currentState = Keyboard.GetState();
             UpdateToggle();
 
-            if (Shift(Keys.R)) fieldSim = new FieldSim(128, 5, width, height, ui_txtColor, Arial12, stopwatch);
+            if (Shift(Keys.R)) fieldSim = new FieldSim(scale, 5, width, height, ui_txtColor, Arial12, stopwatch);
             if (tog[Keys.V] && Shift(Keys.C)) tog[Keys.V] = false;
             if (tog[Keys.C] && Shift(Keys.V)) tog[Keys.C] = false;
         }
@@ -77,11 +77,12 @@ namespace cSharpSOPport
 
         }
 
-        public void SkiftResolution(int width, int height)
+        public void SkiftResolution(int width, int height, float scale)
         {
             this.width = width;
             this.height = height;
-            fieldSim.SkiftResolution(width, height);
+            this.scale = scale;
+            fieldSim = new FieldSim(scale, 5, width, height, ui_txtColor, Arial12, stopwatch);
         }
 
         bool Shift(Keys key)
