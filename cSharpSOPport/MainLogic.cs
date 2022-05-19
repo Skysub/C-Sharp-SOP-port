@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace cSharpSOPport
 {
@@ -22,6 +24,7 @@ namespace cSharpSOPport
         KeyboardState currentState, previousState;
         SpriteFont Arial12;
         int menuPick = 0;
+        Dictionary<Keys, bool> tog = new Dictionary<Keys, bool>();
 
         public MainLogic(int width, int height, SpriteFont Arial12, Game1 game1)
         {
@@ -51,19 +54,22 @@ namespace cSharpSOPport
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //if (!kb.getToggle(84)) fieldSim.Draw(kb.getToggle(86), kb.getToggle(32), kb.getToggle(67), UI, spriteBatch);
+            if (!kb.getToggle(84)) fieldSim.Draw(kb.getToggle(86), kb.getToggle(32), kb.getToggle(67), UI, spriteBatch);
             DrawUI();
         }
 
         void HandleControls()
         {
+            previousState = currentState;
+            currentState = Keyboard.GetState();
+
             /*if (kb.Shift(82)) fieldSim = new FieldSim(128, 5);
             if (kb.getToggle(86) && kb.Shift(67)) kb.setToggle(86, false);
             if (kb.getToggle(67) && kb.Shift(86)) kb.setToggle(67, false);*/
         }
 
         void HandleUI()
-        { 
+        {
 
         }
 
@@ -72,17 +78,27 @@ namespace cSharpSOPport
 
         }
 
-        public void HandleInput(int x, bool y)
-        {
-            //kb.setKey(x, y);
-            //println(x);
-        }
-
         public void SkiftResolution(int width, int height)
         {
             this.width = width;
             this.height = height;
             fieldSim.SkiftResolution(width, height);
+        }
+
+        bool Shift(Keys key)
+        {
+            return currentState.IsKeyDown(key) && previousState.IsKeyUp(key);
+        }
+
+        void UpdateToggle()
+        {
+            foreach (Keys x in tog.Keys)
+            {
+                if (Shift(x))
+                {
+                    tog[x] = !tog[x];
+                }
+            }
         }
     }
 }
