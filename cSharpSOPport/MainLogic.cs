@@ -47,7 +47,7 @@ namespace cSharpSOPport
             HandleControls();
             HandleUI();
 
-            //if (!tog[Keys.Space] && !tog[Keys.T]) Console.WriteLine(fieldSim.Update());
+            if (!tog[Keys.Space] && !tog[Keys.T]) Console.WriteLine(fieldSim.Update());
         }
 
         public void Draw(SpriteBatch spriteBatch)

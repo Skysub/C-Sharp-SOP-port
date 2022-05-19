@@ -1,9 +1,8 @@
-﻿using Cocos2D;
-using CocosDenshion;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using System;
 
 namespace cSharpSOPport
 {
@@ -24,6 +23,8 @@ namespace cSharpSOPport
             Content.RootDirectory = "Content";
             content = Content;
             IsMouseVisible = true;
+            this.IsFixedTimeStep = false;
+            this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 144d);
         }
 
         protected override void LoadContent()//Loader skrifttypen der bruges til ald tekst i programmet og initialiserer vinduet samt skærmene.
@@ -42,11 +43,14 @@ namespace cSharpSOPport
         protected override void Update(GameTime gameTime)
         {
             checkExit();
-
-            if (start) //Styrer hvilken skærm der er aktiv
+            if (start)// Styrer hvilken skærm der er aktiv
+            {
                 startScreen.Update(gameTime);
+            }
             else
-                mainLogic.Update(gameTime); ;
+            {
+                mainLogic.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -57,9 +61,15 @@ namespace cSharpSOPport
             spriteBatch.Begin();
 
             if (start)// Styrer hvilken skærm der er aktiv
+            {
+                //startScreen.Update(gameTime);
                 startScreen.Draw(spriteBatch);
+            }
             else
+            {
+                //mainLogic.Update(gameTime);
                 mainLogic.Draw(spriteBatch);
+            }
 
             spriteBatch.End();
         }

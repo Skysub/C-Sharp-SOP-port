@@ -66,16 +66,16 @@ namespace cSharpSOPport
             timerS = (int)stopwatch.ElapsedMilliseconds;
             fluid.step();
             timerS = (int)stopwatch.ElapsedMilliseconds - timerS;
-            //println(timerS);
+            Console.WriteLine(timerS);
             return timerS;
         }
 
         public void Draw(bool showVel, bool paused, bool showVelF, bool UI, SpriteBatch spriteBatch)
         {
             timerR = (int)stopwatch.ElapsedMilliseconds;
-            if (!showVel && !showVelF) fluid.RenderD();
-            else if (!showVelF) fluid.RenderV();
-            else fluid.RenderVelF();
+            if (!showVel && !showVelF) fluid.RenderD(spriteBatch);
+            else if (!showVelF) fluid.RenderV(spriteBatch);
+            else fluid.RenderVelF(spriteBatch);
             timerR = (int)stopwatch.ElapsedMilliseconds - timerR;
 
             if (UI)

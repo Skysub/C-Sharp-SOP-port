@@ -92,7 +92,7 @@ namespace cSharpSOPport
             this.Vy[index] += amountY;
         }
 
-        public void RenderD()
+        public void RenderD(SpriteBatch spriteBatch)
         {
             //colorMode(HSB, 255);
 
@@ -103,14 +103,15 @@ namespace cSharpSOPport
                     float x = i * SCALE;
                     float y = j * SCALE;
                     float d = this.density[IX(i, j)];
-                   /* fill((d + 50) % 255, 200, d);
-                    noStroke();
-                    square(x, y, SCALE);*/
+                    /* fill((d + 50) % 255, 200, d);
+                     noStroke();
+                     square(x, y, SCALE);*/
+                    spriteBatch.FillRectangle(x, y, SCALE, SCALE, getRGB((int)(d + 50) % 255, 200, d));
                 }
             }
         }
 
-        public void RenderV()
+        public void RenderV(SpriteBatch spriteBatch)
         {
 
             for (int i = 0; i < N; i++)
@@ -130,7 +131,7 @@ namespace cSharpSOPport
             }
         }
 
-        public void RenderVelF()
+        public void RenderVelF(SpriteBatch spriteBatch)
         {
             //colorMode(HSB, 255);
 
@@ -164,6 +165,51 @@ namespace cSharpSOPport
             x = Math.Clamp(x, 0, N - 1);
             y = Math.Clamp(y, 0, N - 1);
             return x + (y * N);
+        }
+
+        /// <summary>
+        /// Takes a colour in HSV colour space and returns it in RGB space as an XNA Color object.
+        /// </summary>
+        /// <param name="H">'Hue' between 0 and 360.</param>
+        /// <param name="S">'Saturation' between 0 and 1</param>
+        /// <param name="V">'Value' between 0 and 1</param>
+        /// <returns></returns>
+        public static Color getRGB(int H, double S, double V)
+        {
+            double dC = (V * S);
+            double Hd = ((double)H) / 60;
+            double dX = (dC * (1 - Math.Abs((Hd % 2) - 1)));//dC * (1 - ((Hd + 1) % 2));
+
+            int C = (int)(dC * 255);
+            int X = (int)(dX * 255);
+
+            //Console.WriteLine("H:" + H + " S:" + S + " V:" + V + ", C: " + C + " X:" + X + " Hd:" + Hd);
+
+            if (Hd < 1)
+            {
+                return new Color(C, X, 0);
+            }
+            else if (Hd < 2)
+            {
+                return new Color(X, C, 0);
+            }
+            else if (Hd < 3)
+            {
+                return new Color(0, C, X);
+            }
+            else if (Hd < 4)
+            {
+                return new Color(0, X, C);
+            }
+            else if (Hd < 5)
+            {
+                return new Color(X, 0, C);
+            }
+            else if (Hd < 6)
+            {
+                return new Color(C, 0, X);
+            }
+            return new Color(0, 0, 0);
         }
     }
 }
